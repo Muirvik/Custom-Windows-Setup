@@ -1,8 +1,8 @@
 # ==============================================================================
 # WinSux - Forked and modified by Mauridian (ItsMauridian)
 # BUILD MARKER: reliability16 2026-07-10 - fresh-install reliability and audit build
-# Repo: https://github.com/ItsMauridian/Custom-Windows-Setup
-# Run: iwr https://winsetup.tsql.gg -useb | iex
+# Repo: https://github.com/Muirvik/Custom-Windows-Setup
+# Run: iwr https://raw.githubusercontent.com/Muirvik/Custom-Windows-Setup/main/ItsMauridian-WinSux.ps1 -useb | iex
 #
 # Original script by FR33THY:
 # https://github.com/FR33THYFR33THY/WinSux-Windows-Optimization-Guide
@@ -27,7 +27,7 @@
 # ==============================================================================
 
 # CONFIG
-$CwsRepoRawBase = "https://raw.githubusercontent.com/ItsMauridian/Custom-Windows-Setup/refs/heads/main"
+$CwsRepoRawBase = "https://raw.githubusercontent.com/Muirvik/Custom-Windows-Setup/refs/heads/main"
 $CwsDependencies = @{
     SevenZip = @{ Url = "https://github.com/ip7z/7zip/releases/download/26.02/7z2602-x64.exe"; File = "$env:SystemRoot\Temp\7 Zip.exe"; Sha256 = "6745FA76DC2EA031596D8678F6F6B99C3C1B435B4164A63485ADBBC7B8D82EF0" }
     DDU = @{ Url = "https://download.wagnardsoft.com/DDU/DDU%20v18.1.5.5.exe"; File = "$env:SystemRoot\Temp\DDU.exe"; Sha256 = "F5A5095018EA5641B68DC622570770C5815FA73ECBF053018925FBB126CBC3B9" }

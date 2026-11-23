@@ -9,7 +9,7 @@ The primary target is Windows 11 IoT Enterprise LTSC. Windows 10 IoT Enterprise 
 Open Windows PowerShell as administrator and run:
 
 ```powershell
-iwr https://winsetup.tsql.gg -UseBasicParsing | iex
+iwr https://raw.githubusercontent.com/Muirvik/Custom-Windows-Setup/main/ItsMauridian-WinSux.ps1 -UseBasicParsing | iex
 ```
 
 The setup creates a restore point first, asks for installation choices, prepares DDU, restarts into Safe Mode, removes display and audio drivers, returns to normal Windows, then continues with StepTwo.
@@ -217,7 +217,7 @@ The verification report checks:
 Upload the current repository files first. Then run this from an administrator PowerShell window:
 
 ```powershell
-iwr "https://raw.githubusercontent.com/ItsMauridian/Custom-Windows-Setup/main/Scripts/Setup/Recover-StepTwo.ps1?nocache=$([DateTimeOffset]::UtcNow.ToUnixTimeSeconds())" -UseBasicParsing -OutFile "$env:TEMP\Recover-StepTwo.ps1"; powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$env:TEMP\Recover-StepTwo.ps1"
+iwr "https://raw.githubusercontent.com/Muirvik/Custom-Windows-Setup/main/Scripts/Setup/Recover-StepTwo.ps1?nocache=$([DateTimeOffset]::UtcNow.ToUnixTimeSeconds())" -UseBasicParsing -OutFile "$env:TEMP\Recover-StepTwo.ps1"; powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$env:TEMP\Recover-StepTwo.ps1"
 ```
 
 Do not run DDU again when only StepTwo needs recovery.
