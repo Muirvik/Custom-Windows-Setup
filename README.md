@@ -217,7 +217,7 @@ The verification report checks:
 Upload the current repository files first. Then run this from an administrator PowerShell window:
 
 ```powershell
-iwr "https://raw.githubusercontent.com/ItsMauridian/Custom-Windows-Setup/main/Scripts/Setup/Recover-StepTwo.ps1?nocache=$([DateTimeOffset]::UtcNow.ToUnixTimeSeconds())" -UseBasicParsing -OutFile "$env:TEMP\Recover-StepTwo.ps1"; powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$env:TEMP\Recover-StepTwo.ps1"
+iwr "https://raw.githubusercontent.com/Muirvik/Custom-Windows-Setup/main/Scripts/Setup/Recover-StepTwo.ps1?nocache=$([DateTimeOffset]::UtcNow.ToUnixTimeSeconds())" -UseBasicParsing -OutFile "$env:TEMP\Recover-StepTwo.ps1"; powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$env:TEMP\Recover-StepTwo.ps1"
 ```
 
 Do not run DDU again when only StepTwo needs recovery.

@@ -5,8 +5,8 @@ $workRoot = Join-Path $env:ProgramData 'ItsMauridian\Custom-Windows-Setup'
 $logPath = Join-Path $workRoot 'Resume-StepTwo.log'
 $stepTwoPath = Join-Path $workRoot 'StepTwo.ps1'
 $verifyPath = Join-Path $workRoot 'Verify-Setup.ps1'
-$rawStepTwoUrl = 'https://raw.githubusercontent.com/ItsMauridian/Custom-Windows-Setup/refs/heads/main/Scripts/Setup/StepTwo.ps1'
-$rawVerifyUrl = 'https://raw.githubusercontent.com/ItsMauridian/Custom-Windows-Setup/refs/heads/main/Scripts/Setup/Verify-Setup.ps1'
+$rawStepTwoUrl = 'https://raw.githubusercontent.com/Muirvik/Custom-Windows-Setup/refs/heads/main/Scripts/Setup/StepTwo.ps1'
+$rawVerifyUrl = 'https://raw.githubusercontent.com/Muirvik/Custom-Windows-Setup/refs/heads/main/Scripts/Setup/Verify-Setup.ps1'
 $powerShellPath = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
 
 New-Item -Path $workRoot -ItemType Directory -Force | Out-Null

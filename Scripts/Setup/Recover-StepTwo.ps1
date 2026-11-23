@@ -12,7 +12,7 @@ if (-not $isAdmin) {
 }
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$rawBase = 'https://raw.githubusercontent.com/ItsMauridian/Custom-Windows-Setup/refs/heads/main'
+$rawBase = 'https://raw.githubusercontent.com/Muirvik/Custom-Windows-Setup/refs/heads/main'
 $workRoot = Join-Path $env:ProgramData 'ItsMauridian\Custom-Windows-Setup'
 $stepTwoPath = Join-Path $workRoot 'StepTwo.ps1'
 $resumePath = Join-Path $workRoot 'Resume-StepTwo.ps1'
