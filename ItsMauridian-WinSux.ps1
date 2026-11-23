@@ -2,7 +2,7 @@
 # WinSux - Forked and modified by Mauridian (ItsMauridian)
 # BUILD MARKER: reliability16 2026-07-10 - fresh-install reliability and audit build
 # Repo: https://github.com/Muirvik/Custom-Windows-Setup
-# Run: iwr https://winsetup.tsql.gg -useb | iex
+# Run: iwr https://raw.githubusercontent.com/Muirvik/Custom-Windows-Setup/main/ItsMauridian-WinSux.ps1 -useb | iex
 #
 # Original script by FR33THY:
 # https://github.com/FR33THYFR33THY/WinSux-Windows-Optimization-Guide
