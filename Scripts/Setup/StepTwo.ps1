@@ -1721,7 +1721,7 @@ Windows Registry Editor Version 5.00
 
 ; hide home in settings
 [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer]
-"SettingsPageVisibility"="hide:home;hide:aicomponents;"
+"SettingsPageVisibility"="hide:home;aicomponents"
 
 ; black powershell console
 [HKEY_CURRENT_USER\Console\%SystemRoot%_System32_WindowsPowerShell_v1.0_powershell.exe]
