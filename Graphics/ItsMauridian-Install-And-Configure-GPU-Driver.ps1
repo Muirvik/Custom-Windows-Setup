@@ -596,7 +596,7 @@ $nipfile = @'
   </Profile>
 </ArrayOfProfile>
 '@
-Set-Content -Path "$env:SystemRoot\Temp\Inspector.nip" -Value $nipfile -Force
+Set-Content -Path "$env:SystemRoot\Temp\Inspector.nip" -Value $nipfile -Encoding Unicode -Force
 
 # import nip
 Start-Process -wait "$env:SystemRoot\Temp\Inspector\nvidiaProfileInspector.exe" -ArgumentList "-silentImport -silent $env:SystemRoot\Temp\Inspector.nip"
