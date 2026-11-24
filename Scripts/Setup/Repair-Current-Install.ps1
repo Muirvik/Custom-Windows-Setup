@@ -132,7 +132,7 @@ foreach ($setting in $settings) {
 }
 
 try {
-    $allowPackages=@(Get-AppxPackage -AllUsers -ErrorAction SilentlyContinue | Where-Object {$_.Name -in @('Microsoft.WindowsStore','Microsoft.DesktopAppInstaller','MicrosoftCorporationII.WindowsApp') -or $_.Name -like '*EarTrumpet*'})
+    $allowPackages=@(Get-AppxPackage -AllUsers -ErrorAction SilentlyContinue | Where-Object {$_.Name -in @('Microsoft.WindowsStore','Microsoft.DesktopAppInstaller') -or $_.Name -like '*EarTrumpet*'})
     $allowPfns=@($allowPackages.PackageFamilyName | Where-Object {$_} | Sort-Object -Unique)
     if ($allowPfns.Count -gt 0) {
         if (-not (Set-RegistryValue64 -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy' -Name 'LetAppsRunInBackground_ForceAllowTheseApps' -Value ([string[]]$allowPfns) -Kind MultiString)) {$policyFailures++}
@@ -174,9 +174,6 @@ if ((Test-Path $appResultsPath) -and $winget) {
             $id=($text -replace ' \(.*$','')
             $list=(& $winget.Source list --id $id -e --accept-source-agreements --disable-interactivity 2>&1 | Out-String)
             $isInstalled=($LASTEXITCODE -eq 0 -and $list -match [regex]::Escape($id))
-            if (-not $isInstalled -and $id -eq 'Microsoft.WindowsApp') {
-                $isInstalled=[bool](Get-AppxPackage -AllUsers -ErrorAction SilentlyContinue | Where-Object {$_.Name -eq 'MicrosoftCorporationII.WindowsApp'})
-            }
             if ($isInstalled) {[void]$verified.Add($id)} else {[void]$unverified.Add($text)}
         }
         [pscustomobject]@{GeneratedAt=(Get-Date -Format o);Selected=@($results.Selected);Verified=@($verified|Select-Object -Unique);Unverified=@($unverified|Select-Object -Unique);Failed=@($results.Failed);Manual=@($results.Manual)} | ConvertTo-Json -Depth 5 | Set-Content $appResultsPath -Encoding UTF8 -Force

@@ -464,7 +464,6 @@ $cwsOptions = [ordered]@{
     InstallGamingApps = Read-CwsYesNo -Prompt 'Install game launchers and gaming components?' -Default $true
     InstallDeveloperTools = Read-CwsYesNo -Prompt 'Install developer and remote administration tools?' -Default $true
     InstallHardwareUtilities = Read-CwsYesNo -Prompt 'Install hardware, media and device utilities?' -Default $true
-    InstallStoreApps = Read-CwsYesNo -Prompt 'Install selected Microsoft Store apps?' -Default $true
     InstallLegacyDotNet = Read-CwsYesNo -Prompt 'Install unsupported legacy .NET 3.1, 5, 6 and 7 runtimes?' -Default $false
     InstallLegacyDeveloperPacks = Read-CwsYesNo -Prompt 'Install legacy .NET Framework developer packs?' -Default $false
     EnableExperimentalTimerTweaks = Read-CwsYesNo -Prompt 'Enable experimental timer service and BCD timer tweaks?' -Default $false

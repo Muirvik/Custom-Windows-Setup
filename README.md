@@ -31,7 +31,7 @@ Main changes:
 - WinGet is resolved from the registered App Installer package and repaired through Microsoft.WinGet.Client when necessary.
 - Windows App Runtime 1.8 and App Installer are used as the LTSC fallback.
 - Every WinGet install has a timeout and is checked afterwards with an exact package lookup.
-- Perplexity uses its Microsoft Store product ID, with an official manual shortcut as fallback. Rockstar failures also create an official manual shortcut instead of blocking setup.
+- Rockstar failures create an official manual shortcut instead of blocking setup.
 - Legacy .NET runtimes and developer packs are optional and off by default.
 - Quick Edit is disabled so mouse selection cannot pause the console.
 - A read-only verification report is created on the desktop.
@@ -115,7 +115,6 @@ All normal app groups default to Yes. Legacy groups default to No.
 - Microsoft Edge and WebView2
 - Microsoft Visual C++ redistributables
 - MSEdgeRedirect
-- Obsidian
 - PowerShell 7
 - PowerToys
 - Proton Drive and Proton VPN
@@ -135,7 +134,6 @@ All normal app groups default to Yes. Legacy groups default to No.
 - Claude
 - Discord and Discord PTB
 - Element
-- Perplexity, installed from Microsoft Store
 - Proton Mail
 - Slack
 - Telegram Desktop
@@ -161,18 +159,12 @@ All normal app groups default to Yes. Legacy groups default to No.
 ### Hardware, media and device utilities
 
 - Bambu Studio
-- Apple Bonjour
 - EarTrumpet
 - Elgato Stream Deck
 - Futuremark SystemInfo
 - Logitech G HUB
 - Revo Uninstaller Pro
 - TagScanner
-- iTunes
-
-### Store apps
-
-- Windows App
 
 ### Optional legacy packages
 

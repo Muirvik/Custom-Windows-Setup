@@ -33,7 +33,6 @@
 - [ ] WinGet output is not mistaken for an exit code.
 - [ ] No security hash bypass is present.
 - [ ] App Installer frameworks are not ordinary app-list entries.
-- [ ] Perplexity uses Microsoft Store product ID 9P9XG917PWCJ and falls back to an official manual shortcut.
 - [ ] Rockstar failures create an official manual shortcut.
 
 ## Applications

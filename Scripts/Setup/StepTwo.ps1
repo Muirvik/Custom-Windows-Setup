@@ -75,7 +75,6 @@ $CwsDefaultOptions = [pscustomobject]@{
     InstallGamingApps = $true
     InstallDeveloperTools = $true
     InstallHardwareUtilities = $true
-    InstallStoreApps = $true
     InstallLegacyDotNet = $false
     InstallLegacyDeveloperPacks = $false
     EnableExperimentalTimerTweaks = $false
@@ -2588,12 +2587,6 @@ function Test-CwsWinGetInstalled {
     param([Parameter(Mandatory)][string]$Id)
     $result = Invoke-CwsWinGetCommand -Arguments @('list','--id',$Id,'-e','--accept-source-agreements','--disable-interactivity') -TimeoutSeconds 120 -Activity "Verifying $Id"
     if ($result.ExitCode -eq 0 -and $result.Output -match [regex]::Escape($Id)) { return $true }
-    # Some Microsoft Store packages are not listed by "winget list" right after install.
-    # Fall back to the registered AppX package name for the known ones.
-    $storePackageNames = @{ 'Microsoft.WindowsApp' = 'MicrosoftCorporationII.WindowsApp'; '9N1F85V9T8BN' = 'MicrosoftCorporationII.WindowsApp' }
-    if ($storePackageNames.ContainsKey($Id)) {
-        return [bool](Get-AppxPackage -AllUsers -Name $storePackageNames[$Id] -ErrorAction SilentlyContinue)
-    }
     return $false
 }
 
@@ -2658,12 +2651,12 @@ $recommendedApps = @(
     'Microsoft.VCRedist.2005.x86','Microsoft.VCRedist.2005.x64','Microsoft.VCRedist.2008.x64','Microsoft.VCRedist.2008.x86',
     'Microsoft.VCRedist.2010.x64','Microsoft.VCRedist.2010.x86','Microsoft.VCRedist.2012.x64','Microsoft.VCRedist.2012.x86',
     'Microsoft.VCRedist.2013.x64','Microsoft.VCRedist.2013.x86','Microsoft.VCRedist.2015+.x64','Microsoft.VCRedist.2015+.x86',
-    'rcmaehl.MSEdgeRedirect','Obsidian.Obsidian','Microsoft.PowerShell','Microsoft.PowerToys','Proton.ProtonDrive',
+    'rcmaehl.MSEdgeRedirect','Microsoft.PowerShell','Microsoft.PowerToys','Proton.ProtonDrive',
     'Proton.ProtonVPN','ShareX.ShareX','Tailscale.Tailscale','VideoLAN.VLC','Microsoft.WindowsTerminal',
     'memstechtips.Winhance','RARLab.WinRAR','WinSCP.WinSCP','Devolutions.UniGetUI','Microsoft.Sysinternals.Autoruns'
 )
 $communicationApps = @(
-    'Anthropic.Claude','Discord.Discord','Discord.Discord.PTB','Element.Element','9P9XG917PWCJ',
+    'Anthropic.Claude','Discord.Discord','Discord.Discord.PTB','Element.Element',
     'Proton.ProtonMail','SlackTechnologies.Slack','Telegram.TelegramDesktop','Termius.Termius','Zoom.Zoom'
 )
 $gamingApps = @(
@@ -2673,11 +2666,10 @@ $developerApps = @(
     'Balena.Etcher','Microsoft.OpenSSH.Preview','RaspberryPiFoundation.RaspberryPiImager','SublimeHQ.SublimeText.4'
 )
 $hardwareApps = @(
-    'Bambulab.Bambustudio','Apple.Bonjour','File-New-Project.EarTrumpet','Elgato.StreamDeck',
+    'Bambulab.Bambustudio','File-New-Project.EarTrumpet','Elgato.StreamDeck',
     'Futuremark.FuturemarkSystemInfo','Logitech.GHUB','RevoUninstaller.RevoUninstallerPro',
-    'SergeySerkov.TagScanner','Apple.iTunes'
+    'SergeySerkov.TagScanner'
 )
-$storeApps = @('Microsoft.WindowsApp')
 $legacyDotNetApps = @(
     'Microsoft.DotNet.Native.Runtime','Microsoft.DotNet.Runtime.3_1','Microsoft.DotNet.Runtime.5',
     'Microsoft.DotNet.Runtime.6','Microsoft.DotNet.Runtime.7'
@@ -2690,7 +2682,6 @@ if (Get-CwsOption -Name 'InstallCommunicationApps' -Default $true) { $apps += $c
 if (Get-CwsOption -Name 'InstallGamingApps' -Default $true) { $apps += $gamingApps }
 if (Get-CwsOption -Name 'InstallDeveloperTools' -Default $true) { $apps += $developerApps }
 if (Get-CwsOption -Name 'InstallHardwareUtilities' -Default $true) { $apps += $hardwareApps }
-if (Get-CwsOption -Name 'InstallStoreApps' -Default $true) { $apps += $storeApps }
 if (Get-CwsOption -Name 'InstallLegacyDotNet' -Default $false) { $apps += $legacyDotNetApps }
 if (Get-CwsOption -Name 'InstallLegacyDeveloperPacks' -Default $false) { $apps += $legacyDeveloperPacks }
 if ([Environment]::OSVersion.Version.Build -ge 22000 -and (Get-CwsOption -Name 'InstallRecommendedApps' -Default $true)) { $apps += 'StartIsBack.StartAllBack' }
@@ -2706,8 +2697,8 @@ if ($wingetWorks) {
     $appNumber = 0
     foreach ($app in $apps) {
         $appNumber++
-        $timeout = if ($app -match 'Launcher|Steam|Bambustudio|StreamDeck|GHUB|iTunes|EADesktop') { 1200 } else { 600 }
-        $source = if ($app -in @('Microsoft.WindowsApp','9P9XG917PWCJ')) { 'msstore' } else { 'winget' }
+        $timeout = if ($app -match 'Launcher|Steam|Bambustudio|StreamDeck|GHUB|EADesktop') { 1200 } else { 600 }
+        $source = 'winget'
         Write-Host "[$appNumber/$($apps.Count)] Installing $app" -ForegroundColor Cyan
         $installResult = Invoke-CwsWinGetInstall -Id $app -TimeoutSeconds $timeout -Source $source
         if ($installResult.Success) {
@@ -2715,18 +2706,12 @@ if ($wingetWorks) {
                 $verifiedApps += $app
             } else {
                 $unverifiedApps += "$app ($($installResult.Detail))"
-                if ($app -eq '9P9XG917PWCJ') {
-                    New-CwsInternetShortcut -Name 'Install Perplexity' -Url 'https://www.perplexity.ai/download' | Out-Null
-                }
                 if ($app -eq 'RockstarGames.Launcher') {
                     New-CwsInternetShortcut -Name 'Install Rockstar Games Launcher' -Url 'https://www.rockstargames.com/downloads' | Out-Null
                 }
             }
         } else {
             $failedApps += "$app ($($installResult.Detail))"
-            if ($app -eq '9P9XG917PWCJ') {
-                New-CwsInternetShortcut -Name 'Install Perplexity' -Url 'https://www.perplexity.ai/download' | Out-Null
-            }
             if ($app -eq 'RockstarGames.Launcher') {
                 New-CwsInternetShortcut -Name 'Install Rockstar Games Launcher' -Url 'https://www.rockstargames.com/downloads' | Out-Null
             }
@@ -2739,7 +2724,7 @@ if ($wingetWorks) {
 # documented default policy.
 try {
     $backgroundAllowPackages = @(Get-AppxPackage -AllUsers -ErrorAction SilentlyContinue | Where-Object {
-        $_.Name -in @('Microsoft.WindowsStore','Microsoft.DesktopAppInstaller','MicrosoftCorporationII.WindowsApp') -or
+        $_.Name -in @('Microsoft.WindowsStore','Microsoft.DesktopAppInstaller') -or
         $_.Name -like '*EarTrumpet*'
     })
     $backgroundAllowPfns = @($backgroundAllowPackages.PackageFamilyName | Where-Object { $_ } | Sort-Object -Unique)
@@ -2769,7 +2754,7 @@ try {
 # Remove only known heavy application auto-start entries. Update services and
 # scheduled update tasks are deliberately preserved.
 if (Get-CwsOption -Name 'DisableAppAutoStart' -Default $true) {
-    $startupPattern = 'Discord|Slack|Teams|Epic|Steam|EADesktop|EA Desktop|EABackground|Ubisoft|Rockstar|Claude|Perplexity|Logi|GHUB|iTunesHelper|Telegram|Termius|Zoom|OneDrive'
+    $startupPattern = 'Discord|Slack|Teams|Epic|Steam|EADesktop|EA Desktop|EABackground|Ubisoft|Rockstar|Claude|Logi|GHUB|Telegram|Termius|Zoom|OneDrive'
     $removedStartupEntries = 0
     foreach ($runPath in @(
         'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run',
