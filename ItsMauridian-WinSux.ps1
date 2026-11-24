@@ -258,16 +258,10 @@ if (!(Test-CwsInternet)) {
     Exit 1
 }
 
-Write-Host "WINDOWS ACTIVATION`n"
 
-# Microsoft Activation Scripts (third-party, downloaded and executed without a hash check).
-# Opt-in only: the default answer is No.
-$cwsActivate = Read-Host 'Run the third-party Microsoft Activation Scripts (get.activated.win)? Only choose Y if you have reviewed them [y/N]'
-if ($cwsActivate.Trim().ToLowerInvariant() -in @('y','yes','j','ja')) {
-    irm https://get.activated.win | iex
-} else {
-    Write-Host "Activation skipped.`n" -ForegroundColor Yellow
-}
+# Windows activation is intentionally NOT part of this script. Downloading and running a
+# third-party activation script here makes Microsoft Defender (AMSI) block the whole setup.
+# If you want activation, run a source you trust yourself, separately, before or after this setup.
 
         Write-Host "WinSux - Forked & Modified" -ForegroundColor Cyan
         Write-Host "Original script by " -ForegroundColor White -NoNewline; Write-Host "FR33THY" -ForegroundColor Cyan -NoNewline; Write-Host " (youtube.com/FR33THY)" -ForegroundColor White
