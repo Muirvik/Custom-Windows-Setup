@@ -53,6 +53,7 @@ try {
 
 # SCRIPT SILENT
 $progresspreference = 'silentlycontinue'
+try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch { }
 
 
 function Remove-CwsPathIfPresent {

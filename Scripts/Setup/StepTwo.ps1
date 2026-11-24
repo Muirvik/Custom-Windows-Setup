@@ -11,6 +11,9 @@ If (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 # redirected with 2>&1 can become an ErrorRecord even when the native command succeeds.
 $ErrorActionPreference = 'Continue'
 
+# Windows PowerShell 5.1 can default to TLS 1.0/1.1; GitHub and Microsoft require TLS 1.2+.
+try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch { }
+
 $Host.UI.RawUI.WindowTitle = $myInvocation.MyCommand.Definition + " (Administrator)"
 $Host.UI.RawUI.BackgroundColor = "Black"
 $Host.PrivateData.ProgressBackgroundColor = "Black"
@@ -2119,7 +2122,6 @@ $appxRemovalPatterns = @(
     'Microsoft.WindowsSoundRecorder',
     'Microsoft.XboxApp',
     'Microsoft.XboxGamingOverlay',
-    'Microsoft.XboxIdentityProvider',
     'Microsoft.XboxSpeechToTextOverlay',
     'Microsoft.GamingApp',
     'Microsoft.YourPhone',
@@ -2258,8 +2260,18 @@ if (Get-CwsOption -Name 'RemoveOneDrive' -Default $true) {
     cmd /c "reg add `"HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive`" /v `"DisableFileSyncNGSC`" /t REG_DWORD /d `"1`" /f >nul 2>&1"
     cmd /c "reg add `"HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive`" /v `"DisableFileSync`" /t REG_DWORD /d `"1`" /f >nul 2>&1"
 
-    foreach ($oneDrivePath in @("$env:USERPROFILE\OneDrive", "$env:LOCALAPPDATA\Microsoft\OneDrive", "$env:PROGRAMDATA\Microsoft OneDrive")) {
+    foreach ($oneDrivePath in @("$env:LOCALAPPDATA\Microsoft\OneDrive", "$env:PROGRAMDATA\Microsoft OneDrive")) {
         Remove-CwsPathIfPresent -LiteralPath $oneDrivePath -Recurse
+    }
+    # Never delete the user's synced OneDrive folder if it contains any files.
+    $oneDriveUserFolder = "$env:USERPROFILE\OneDrive"
+    if (Test-Path -LiteralPath $oneDriveUserFolder) {
+        $oneDriveFiles = @(Get-ChildItem -LiteralPath $oneDriveUserFolder -Recurse -Force -File -ErrorAction SilentlyContinue | Select-Object -First 1)
+        if ($oneDriveFiles.Count -eq 0) {
+            Remove-CwsPathIfPresent -LiteralPath $oneDriveUserFolder -Recurse
+        } else {
+            Add-CwsWarning "The folder $oneDriveUserFolder contains files and was kept. Move or delete it manually if it is no longer needed."
+        }
     }
 
 } else {
@@ -2685,7 +2697,7 @@ try {
 # Remove only known heavy application auto-start entries. Update services and
 # scheduled update tasks are deliberately preserved.
 if (Get-CwsOption -Name 'DisableAppAutoStart' -Default $true) {
-    $startupPattern = 'Discord|Slack|Teams|Epic|Steam|EA|Ubisoft|Rockstar|Claude|Perplexity|Logi|GHUB|iTunesHelper|Telegram|Termius|Zoom|OneDrive'
+    $startupPattern = 'Discord|Slack|Teams|Epic|Steam|EADesktop|EA Desktop|EABackground|Ubisoft|Rockstar|Claude|Perplexity|Logi|GHUB|iTunesHelper|Telegram|Termius|Zoom|OneDrive'
     $removedStartupEntries = 0
     foreach ($runPath in @(
         'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run',
@@ -3997,9 +4009,7 @@ Get-ChildItem -LiteralPath "$env:SystemRoot\Temp" -Force -ErrorAction SilentlyCo
 try { Start-Process -FilePath 'cleanmgr.exe' -ArgumentList '/autoclean /d C:' -Wait -WindowStyle Hidden -ErrorAction Stop } catch { }
 
 foreach ($cleanupPath in @(
-    "$env:SystemDrive\inetpub",
     "$env:SystemDrive\PerfLogs",
-    "$env:SystemDrive\XboxGames",
     "$env:SystemDrive\Windows.old",
     "$env:SystemDrive\DumpStack.log"
 )) {

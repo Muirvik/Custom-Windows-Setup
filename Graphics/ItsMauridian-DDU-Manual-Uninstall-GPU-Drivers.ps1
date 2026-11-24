@@ -52,6 +52,7 @@ try {
 
 # SCRIPT SILENT
 $progresspreference = 'silentlycontinue'
+try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch { }
 
 # FUNCTION FASTER DOWNLOADS WITH OPTIONAL SHA256 VERIFICATION
 function Test-FileHashSha256 {
