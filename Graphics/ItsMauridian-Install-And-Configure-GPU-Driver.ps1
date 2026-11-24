@@ -42,6 +42,8 @@ public static class CwsConsoleNative {
 }
 Disable-CwsQuickEditMode
 
+try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch { }
+
 # SCRIPT CHECK INTERNET
 try {
     $null = Invoke-WebRequest -Uri "https://github.com" -Method Head -UseBasicParsing -TimeoutSec 10
@@ -53,7 +55,6 @@ try {
 
 # SCRIPT SILENT
 $progresspreference = 'silentlycontinue'
-try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch { }
 
 
 function Remove-CwsPathIfPresent {
@@ -211,13 +212,7 @@ cmd /c "reg add `"HKLM\SOFTWARE\Policies\Google\Chrome`" /v `"HighEfficiencyMode
 # remove logon chrome
 cmd /c "reg delete `"HKLM\Software\Microsoft\Active Setup\Installed Components\{8A69D345-D564-463c-AFF1-A69D9E530F96}`" /f >nul 2>&1"
 
-# remove chrome services
-$services = Get-Service | Where-Object { $_.Name -match 'Google' }
-foreach ($service in $services) {
-cmd /c "sc stop `"$($service.Name)`" >nul 2>&1"
-cmd /c "sc delete `"$($service.Name)`" >nul 2>&1"
-}
-
+# Chrome update services are intentionally preserved so the browser stays patched.
 # keep Chrome update scheduled tasks intact so Chrome can stay current.
 
         # FUNCTION SHOW-MENU

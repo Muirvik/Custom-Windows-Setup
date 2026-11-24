@@ -158,7 +158,7 @@ if ((Test-Path $appResultsPath) -and $winget) {
         $unverified=New-Object System.Collections.Generic.List[string]
         foreach ($item in @($results.Unverified)) {
             $text=[string]$item
-            $id=($text -replace ' \(installer returned success.*$','')
+            $id=($text -replace ' \(.*$','')
             $list=(& $winget.Source list --id $id -e --accept-source-agreements --disable-interactivity 2>&1 | Out-String)
             $isInstalled=($LASTEXITCODE -eq 0 -and $list -match [regex]::Escape($id))
             if (-not $isInstalled -and $id -eq 'Microsoft.WindowsApp') {

@@ -41,6 +41,8 @@ public static class CwsConsoleNative {
 }
 Disable-CwsQuickEditMode
 
+try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch { }
+
 # SCRIPT CHECK INTERNET
 try {
     $null = Invoke-WebRequest -Uri "https://github.com" -Method Head -UseBasicParsing -TimeoutSec 10
@@ -52,7 +54,6 @@ try {
 
 # SCRIPT SILENT
 $progresspreference = 'silentlycontinue'
-try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch { }
 
 # FUNCTION FASTER DOWNLOADS WITH OPTIONAL SHA256 VERIFICATION
 function Test-FileHashSha256 {
