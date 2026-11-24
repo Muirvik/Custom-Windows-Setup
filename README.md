@@ -16,7 +16,7 @@ The setup creates a restore point first, asks for installation choices, prepares
 
 Know your Windows account password before the Safe Mode restart. A PIN may not work in Safe Mode.
 
-## Reliability14
+## Reliability14 (foundation of the current reliability16 build)
 
 Reliability14 is built from the successful reliability13 hardware test and its full transcript.
 
@@ -259,7 +259,7 @@ Reliability 15 incorporates the first clean-install verification from 2026-07-11
 - WinGet verification retries for up to 15 seconds after each successful installer.
 - NVIDIA Control Panel result objects are handled correctly instead of being compared with an integer.
 - Final application results are written after GPU installation, so the verification report sees the complete result set.
-- `Repair-Current-Install.ps1` repairs an existing reliability14 installation without reinstalling Windows.
+- `Repair-Current-Install.ps1` repairs an existing reliability14 or later installation without reinstalling Windows.
 
 
 ## Reliability 16

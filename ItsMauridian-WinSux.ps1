@@ -7,7 +7,7 @@
 # Original script by FR33THY:
 # https://github.com/FR33THYFR33THY/WinSux-Windows-Optimization-Guide
 #
-# Reliability14 highlights:
+# Reliability14+ highlights (current build: reliability16):
 #   - Creates a restore point before setup changes.
 #   - Saves setup choices before DDU and reuses them after reboot.
 #   - Stores reboot handoff files under ProgramData and validates every script.
@@ -79,6 +79,9 @@ Disable-CwsQuickEditMode
 
 # SCRIPT SILENT
 $progresspreference = 'silentlycontinue'
+
+# Windows PowerShell 5.1 can default to TLS 1.0/1.1 on older builds; GitHub and Microsoft require TLS 1.2+.
+try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch { }
 
 function Test-FileHashSha256 {
     param(
@@ -321,6 +324,7 @@ Start-Process -Wait "$env:SystemRoot\Temp\vcredist2015_2017_2019_2022_x64.exe" -
 Get-FileFromWeb -URL $CwsDependencies.DDU.Url -File $CwsDependencies.DDU.File -Sha256 $CwsDependencies.DDU.Sha256
 
 # extract ddu with 7zip
+if (!(Test-Path "$env:ProgramFiles\7-Zip\7z.exe")) { throw "7-Zip was not installed; cannot extract DDU. Re-run setup." }
 & "C:\Program Files\7-Zip\7z.exe" x "$env:SystemRoot\Temp\DDU.exe" -o"$env:SystemRoot\Temp\DDU" -y | Out-Null
 
 # set config for ddu

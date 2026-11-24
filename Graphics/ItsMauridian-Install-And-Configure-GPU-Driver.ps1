@@ -871,7 +871,7 @@ if ($IntelGraphicsSoftware) {
 Start-Process "$env:SystemDrive\IntelDriver\Resources\Extras\$IntelGraphicsSoftware" -ArgumentList "/s" -Wait -NoNewWindow
 }
 
-# delete intel® graphics software startup
+# delete intel graphics software startup
 $FileName = "Intel$([char]0xAE) Graphics Software"
 cmd /c "reg delete `"HKLM\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Run`" /v `"$FileName`" /f >nul 2>&1"
 
@@ -879,7 +879,7 @@ cmd /c "reg delete `"HKLM\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\
 cmd /c "sc stop `"IntelGFXFWupdateTool`" >nul 2>&1"
 cmd /c "sc delete `"IntelGFXFWupdateTool`" >nul 2>&1"
 
-# delete intel® content protection hdcp service
+# delete intel content protection hdcp service
 cmd /c "sc stop `"cplspcon`" >nul 2>&1"
 cmd /c "sc delete `"cplspcon`" >nul 2>&1"
 
