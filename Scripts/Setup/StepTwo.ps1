@@ -2435,11 +2435,30 @@ function Install-CwsWindowsAppRuntime18 {
         default { 'x64' }
     }
     $runtimeInstaller = Join-Path $bootstrapDir "WindowsAppRuntimeInstall-$architecture.exe"
-    $runtimeUri = "https://aka.ms/windowsappsdk/1.8/1.8.260529003/windowsappruntimeinstall-$architecture.exe"
+    # Try the pinned build first, then Microsoft's documented "latest 1.8.x" redirect.
+    $runtimeUris = @(
+        "https://aka.ms/windowsappsdk/1.8/1.8.260529003/windowsappruntimeinstall-$architecture.exe",
+        "https://aka.ms/windowsappsdk/1.8/latest/windowsappruntimeinstall-$architecture.exe"
+    )
 
     try {
         Write-Host "Downloading the signed Windows App Runtime 1.8 installer for $architecture..."
-        Invoke-WebRequest -Uri $runtimeUri -UseBasicParsing -OutFile $runtimeInstaller -ErrorAction Stop
+        $runtimeDownloaded = $false
+        foreach ($runtimeUri in $runtimeUris) {
+            try {
+                Invoke-WebRequest -Uri $runtimeUri -UseBasicParsing -OutFile $runtimeInstaller -ErrorAction Stop
+                $runtimeDownloaded = $true
+                break
+            } catch {
+                Add-CwsWarning ("Windows App Runtime download failed from {0}: {1}" -f $runtimeUri, $_.Exception.Message)
+            }
+        }
+        if (-not $runtimeDownloaded) { return $false }
+        $runtimeSignature = Get-AuthenticodeSignature -FilePath $runtimeInstaller -ErrorAction SilentlyContinue
+        if (-not $runtimeSignature -or $runtimeSignature.Status -ne 'Valid') {
+            Add-CwsWarning 'The Windows App Runtime installer did not have a valid Microsoft signature and was not run.'
+            return $false
+        }
         $runtimeExit = Invoke-CwsProcessWithTimeout -FilePath $runtimeInstaller -TimeoutSeconds 300 -Hidden
         if ($runtimeExit -notin @(0, 3010)) {
             Add-CwsWarning "Windows App Runtime 1.8 installer returned exit code $runtimeExit."
