@@ -2656,7 +2656,7 @@ $recommendedApps = @(
     'memstechtips.Winhance','RARLab.WinRAR','WinSCP.WinSCP','Devolutions.UniGetUI','Microsoft.Sysinternals.Autoruns'
 )
 $communicationApps = @(
-    'Anthropic.Claude','Discord.Discord','Discord.Discord.PTB','Element.Element','XP8JNQFBQH6PVF',
+    'Anthropic.Claude','Discord.Discord','Discord.Discord.PTB','Element.Element','9P9XG917PWCJ',
     'Proton.ProtonMail','SlackTechnologies.Slack','Telegram.TelegramDesktop','Termius.Termius','Zoom.Zoom'
 )
 $gamingApps = @(
@@ -2700,7 +2700,7 @@ if ($wingetWorks) {
     foreach ($app in $apps) {
         $appNumber++
         $timeout = if ($app -match 'Launcher|Steam|Bambustudio|StreamDeck|GHUB|iTunes|EADesktop') { 1200 } else { 600 }
-        $source = if ($app -in @('Microsoft.WindowsApp','XP8JNQFBQH6PVF')) { 'msstore' } else { 'winget' }
+        $source = if ($app -in @('Microsoft.WindowsApp','9P9XG917PWCJ')) { 'msstore' } else { 'winget' }
         Write-Host "[$appNumber/$($apps.Count)] Installing $app" -ForegroundColor Cyan
         $installResult = Invoke-CwsWinGetInstall -Id $app -TimeoutSeconds $timeout -Source $source
         if ($installResult.Success) {
@@ -2708,7 +2708,7 @@ if ($wingetWorks) {
                 $verifiedApps += $app
             } else {
                 $unverifiedApps += "$app ($($installResult.Detail))"
-                if ($app -eq 'XP8JNQFBQH6PVF') {
+                if ($app -eq '9P9XG917PWCJ') {
                     New-CwsInternetShortcut -Name 'Install Perplexity' -Url 'https://www.perplexity.ai/download' | Out-Null
                 }
                 if ($app -eq 'RockstarGames.Launcher') {
@@ -2717,7 +2717,7 @@ if ($wingetWorks) {
             }
         } else {
             $failedApps += "$app ($($installResult.Detail))"
-            if ($app -eq 'XP8JNQFBQH6PVF') {
+            if ($app -eq '9P9XG917PWCJ') {
                 New-CwsInternetShortcut -Name 'Install Perplexity' -Url 'https://www.perplexity.ai/download' | Out-Null
             }
             if ($app -eq 'RockstarGames.Launcher') {
