@@ -152,6 +152,9 @@ Add-Line ("Store AutoDownload override: {0}" -f (Read-RegValue 'HKLM:\SOFTWARE\M
 Add-Line ("Store policy AutoDownload override: {0}" -f (Read-RegValue 'HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore' 'AutoDownload'))
 Add-Line ("Edge Startup Boost policy: {0}" -f (Read-RegValue 'HKLM:\SOFTWARE\Policies\Microsoft\Edge' 'StartupBoostEnabled'))
 Add-Line ("Edge background mode policy: {0}" -f (Read-RegValue 'HKLM:\SOFTWARE\Policies\Microsoft\Edge' 'BackgroundModeEnabled'))
+Add-Line ("Edge sidebar disabled policy: {0}" -f (Read-RegValue 'HKLM:\SOFTWARE\Policies\Microsoft\Edge' 'HubsSidebarEnabled'))
+Add-Line ("LLMNR disabled policy (EnableMulticast): {0}" -f (Read-RegValue 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient' 'EnableMulticast'))
+try { Add-Line ("Defender PUA protection: {0}" -f (Get-MpPreference -ErrorAction Stop).PUAProtection) } catch { Add-Line 'Defender PUA protection: unavailable' }
 $allowList = Read-RegValue 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy' 'LetAppsRunInBackground_ForceAllowTheseApps'
 if ($allowList -eq '<missing>') { Add-Line 'Packaged background allowlist: <missing>' }
 else { Add-Line ("Packaged background allowlist: {0}" -f (@($allowList) -join '; ')) }

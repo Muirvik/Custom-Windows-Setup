@@ -275,7 +275,22 @@ function Apply-CwsPrivacyProfile {
         @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization'; Name='DODownloadMode'; Value=0 },
         @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='StartupBoostEnabled'; Value=0 },
         @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='BackgroundModeEnabled'; Value=0 },
-        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR'; Name='AllowGameDVR'; Value=0 }
+        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR'; Name='AllowGameDVR'; Value=0 },
+        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='HubsSidebarEnabled'; Value=0 },
+        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='EdgeShoppingAssistantEnabled'; Value=0 },
+        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='ShowRecommendationsEnabled'; Value=0 },
+        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='PersonalizationReportingEnabled'; Value=0 },
+        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='EdgeFollowEnabled'; Value=0 },
+        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='SpotlightExperiencesAndRecommendationsEnabled'; Value=0 },
+        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='NewTabPageContentEnabled'; Value=0 },
+        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='DiagnosticData'; Value=0 },
+        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='UserFeedbackAllowed'; Value=0 },
+        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='ShowMicrosoftRewards'; Value=0 },
+        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='MetricsReportingEnabled'; Value=0 },
+        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='HideFirstRunExperience'; Value=1 },
+        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='EdgeCollectionsEnabled'; Value=0 },
+        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='ConfigureDoNotTrack'; Value=1 },
+        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient'; Name='EnableMulticast'; Value=0 }
     )
 
     foreach ($policyName in @(
@@ -1740,10 +1755,43 @@ if ($regImportExitCode -ne 0) {
     Add-CwsWarning "The main Windows settings registry import returned exit code $regImportExitCode."
 } else {
     Write-Host "Main Windows settings import completed.`n" -ForegroundColor Green
-
-
-Apply-CwsPrivacyProfile
 }
+
+# Apply the supported privacy policies even if the .reg import failed.
+Apply-CwsPrivacyProfile
+
+# Community-standard telemetry task cleanup (Chris Titus WinUtil, O&O ShutUp10, Win11Debloat).
+# Only well-known data-collection tasks are disabled. Defender, Update and servicing tasks are untouched.
+if (Get-CwsOption -Name 'AggressivePrivacyPerformance' -Default $true) {
+    $telemetryTasks = @(
+        @{ Path='\Microsoft\Windows\Application Experience\'; Name='Microsoft Compatibility Appraiser' },
+        @{ Path='\Microsoft\Windows\Application Experience\'; Name='ProgramDataUpdater' },
+        @{ Path='\Microsoft\Windows\Autochk\'; Name='Proxy' },
+        @{ Path='\Microsoft\Windows\Customer Experience Improvement Program\'; Name='Consolidator' },
+        @{ Path='\Microsoft\Windows\Customer Experience Improvement Program\'; Name='UsbCeip' },
+        @{ Path='\Microsoft\Windows\DiskDiagnostic\'; Name='Microsoft-Windows-DiskDiagnosticDataCollector' },
+        @{ Path='\Microsoft\Windows\Windows Error Reporting\'; Name='QueueReporting' }
+    )
+    $disabledTaskCount = 0
+    foreach ($telemetryTask in $telemetryTasks) {
+        try {
+            $task = Get-ScheduledTask -TaskPath $telemetryTask.Path -TaskName $telemetryTask.Name -ErrorAction SilentlyContinue
+            if ($task -and $task.State -ne 'Disabled') {
+                $task | Disable-ScheduledTask -ErrorAction Stop | Out-Null
+                $disabledTaskCount++
+            }
+        } catch { }
+    }
+    Add-CwsNote "$disabledTaskCount well-known telemetry scheduled tasks were disabled."
+}
+
+# Defender potentially-unwanted-application blocking is a widely recommended hardening setting (CIS, Microsoft guidance).
+try {
+    if (Get-Command Set-MpPreference -ErrorAction SilentlyContinue) {
+        Set-MpPreference -PUAProtection Enabled -ErrorAction Stop
+        Add-CwsNote 'Defender PUA protection was enabled.'
+    }
+} catch { Add-CwsWarning ("Defender PUA protection could not be enabled: {0}" -f $_.Exception.Message) }
 
 # keep MPO disable OS-aware: OverlayTestMode=5 can help on some systems, but on
 # Win11 it can also interfere with DWM/composition and show light frame borders

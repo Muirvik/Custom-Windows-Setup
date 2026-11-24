@@ -52,6 +52,11 @@ The aggressive profile is always enabled. It applies supported policies and remo
 - Packaged app background execution, with an allowlist for selected Store infrastructure and notification apps
 - OneDrive removal and reinstall prevention when selected
 - Known heavy application auto-start entries when selected
+- Edge sidebar, shopping assistant, recommendations, Rewards, Collections, feedback and diagnostic-data policies (as in Win11Debloat and WinUtil)
+- Well-known telemetry scheduled tasks (Compatibility Appraiser, ProgramDataUpdater, CEIP Consolidator and UsbCeip, DiskDiagnosticDataCollector, QueueReporting)
+- LLMNR multicast name resolution (a common CIS and HardeningKitty hardening item)
+
+It also turns on Microsoft Defender PUA protection, a widely recommended hardening setting.
 
 Camera, microphone and notification permissions remain user controlled. Security notifications remain enabled.
 

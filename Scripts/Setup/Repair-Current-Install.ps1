@@ -105,7 +105,22 @@ $settings=@(
     @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization';Name='DODownloadMode';Value=0},
     @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge';Name='StartupBoostEnabled';Value=0},
     @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge';Name='BackgroundModeEnabled';Value=0},
-    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR';Name='AllowGameDVR';Value=0}
+    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR';Name='AllowGameDVR';Value=0},
+    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge';Name='HubsSidebarEnabled';Value=0},
+    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge';Name='EdgeShoppingAssistantEnabled';Value=0},
+    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge';Name='ShowRecommendationsEnabled';Value=0},
+    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge';Name='PersonalizationReportingEnabled';Value=0},
+    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge';Name='EdgeFollowEnabled';Value=0},
+    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge';Name='SpotlightExperiencesAndRecommendationsEnabled';Value=0},
+    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge';Name='NewTabPageContentEnabled';Value=0},
+    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge';Name='DiagnosticData';Value=0},
+    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge';Name='UserFeedbackAllowed';Value=0},
+    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge';Name='ShowMicrosoftRewards';Value=0},
+    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge';Name='MetricsReportingEnabled';Value=0},
+    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge';Name='HideFirstRunExperience';Value=1},
+    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge';Name='EdgeCollectionsEnabled';Value=0},
+    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge';Name='ConfigureDoNotTrack';Value=1},
+    @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient';Name='EnableMulticast';Value=0}
 )
 foreach ($name in @('LetAppsAccessAccountInfo','LetAppsAccessCalendar','LetAppsAccessCallHistory','LetAppsAccessContacts','LetAppsAccessEmail','LetAppsAccessLocation','LetAppsAccessMessaging','LetAppsAccessMotion','LetAppsAccessPhone','LetAppsAccessRadios','LetAppsAccessTasks','LetAppsAccessTrustedDevices','LetAppsSyncWithDevices','LetAppsGetDiagnosticInfo')) {
     $settings += @{Path='HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy';Name=$name;Value=2}
