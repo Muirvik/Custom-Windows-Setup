@@ -286,9 +286,7 @@ function Apply-CwsPrivacyProfile {
         @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='DiagnosticData'; Value=0 },
         @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='UserFeedbackAllowed'; Value=0 },
         @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='ShowMicrosoftRewards'; Value=0 },
-        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='MetricsReportingEnabled'; Value=0 },
         @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='HideFirstRunExperience'; Value=1 },
-        @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='EdgeCollectionsEnabled'; Value=0 },
         @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Edge'; Name='ConfigureDoNotTrack'; Value=1 },
         @{ Path='HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient'; Name='EnableMulticast'; Value=0 }
     )
