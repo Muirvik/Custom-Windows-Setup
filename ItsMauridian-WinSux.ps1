@@ -260,8 +260,14 @@ if (!(Test-CwsInternet)) {
 
 Write-Host "WINDOWS ACTIVATION`n"
 
-# run microsoft activation scripts
-irm https://get.activated.win | iex
+# Microsoft Activation Scripts (third-party, downloaded and executed without a hash check).
+# Opt-in only: the default answer is No.
+$cwsActivate = Read-Host 'Run the third-party Microsoft Activation Scripts (get.activated.win)? Only choose Y if you have reviewed them [y/N]'
+if ($cwsActivate.Trim().ToLowerInvariant() -in @('y','yes','j','ja')) {
+    irm https://get.activated.win | iex
+} else {
+    Write-Host "Activation skipped.`n" -ForegroundColor Yellow
+}
 
         Write-Host "WinSux - Forked & Modified" -ForegroundColor Cyan
         Write-Host "Original script by " -ForegroundColor White -NoNewline; Write-Host "FR33THY" -ForegroundColor Cyan -NoNewline; Write-Host " (youtube.com/FR33THY)" -ForegroundColor White

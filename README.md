@@ -12,7 +12,7 @@ Open Windows PowerShell as administrator and run:
 iwr https://raw.githubusercontent.com/Muirvik/Custom-Windows-Setup/main/ItsMauridian-WinSux.ps1 -UseBasicParsing | iex
 ```
 
-The setup creates a restore point first, asks for installation choices, prepares DDU, restarts into Safe Mode, removes display and audio drivers, returns to normal Windows, then continues with StepTwo.
+The setup creates a restore point first, optionally runs the third-party Microsoft Activation Scripts (prompt defaults to No), asks for installation choices, prepares DDU, restarts into Safe Mode, removes display and audio drivers, returns to normal Windows, then continues with StepTwo.
 
 Know your Windows account password before the Safe Mode restart. A PIN may not work in Safe Mode.
 
