@@ -63,7 +63,10 @@ try {
     $powerList = (& powercfg.exe /list 2>&1 | Out-String)
     Add-Line 'Available power plans:'
     Add-Line $powerList.Trim()
-    $modernStandby = ((& powercfg.exe /a 2>&1 | Out-String) -match 'Standby \(S0 Low Power Idle\)')
+    # Only the "available" section counts. The same text also appears under "not available".
+    $sleepStates = (& powercfg.exe /a 2>&1 | Out-String)
+    $availableStates = ($sleepStates -split '(?im)^.*(not available|niet beschikbaar|nicht verf).*$')[0]
+    $modernStandby = ($availableStates -match 'Standby \(S0 Low Power Idle\)')
     Add-Line ("Modern Standby detected: {0}" -f $modernStandby)
 } catch { }
 

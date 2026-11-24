@@ -2587,7 +2587,14 @@ function Get-CwsWinGetErrorText {
 function Test-CwsWinGetInstalled {
     param([Parameter(Mandatory)][string]$Id)
     $result = Invoke-CwsWinGetCommand -Arguments @('list','--id',$Id,'-e','--accept-source-agreements','--disable-interactivity') -TimeoutSeconds 120 -Activity "Verifying $Id"
-    return ($result.ExitCode -eq 0 -and $result.Output -match [regex]::Escape($Id))
+    if ($result.ExitCode -eq 0 -and $result.Output -match [regex]::Escape($Id)) { return $true }
+    # Some Microsoft Store packages are not listed by "winget list" right after install.
+    # Fall back to the registered AppX package name for the known ones.
+    $storePackageNames = @{ 'Microsoft.WindowsApp' = 'MicrosoftCorporationII.WindowsApp'; '9N1F85V9T8BN' = 'MicrosoftCorporationII.WindowsApp' }
+    if ($storePackageNames.ContainsKey($Id)) {
+        return [bool](Get-AppxPackage -AllUsers -Name $storePackageNames[$Id] -ErrorAction SilentlyContinue)
+    }
+    return $false
 }
 
 function New-CwsInternetShortcut {
@@ -4045,7 +4052,10 @@ cmd /c "bcdedit /set useplatformtick yes >nul 2>&1"
 cmd /c "bcdedit /set disabledynamictick yes >nul 2>&1"
 
 } else {
-    Add-CwsNote 'Experimental timer service and BCD timer changes were skipped.'
+    # Restore Windows defaults if an earlier run or another tool left the timer overrides behind.
+    cmd /c "bcdedit /deletevalue useplatformtick >nul 2>&1"
+    cmd /c "bcdedit /deletevalue disabledynamictick >nul 2>&1"
+    Add-CwsNote 'Experimental timer service and BCD timer changes were skipped; leftover BCD timer overrides were reset to defaults.'
 }
 
 # rebuild performance counters
